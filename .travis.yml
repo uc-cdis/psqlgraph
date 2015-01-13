@@ -1,4 +1,6 @@
 language: python
+services:
+  - neo4j
 python:
     - "2.7"
 # command to run tests
@@ -15,5 +17,4 @@ before_script:
   - sudo service postgresql restart
   - yes | python setup.py install
   - python bin/setup_psqlgraph.py
-  - python bin/setup_neo4j.py
 script: "nosetests -v"
