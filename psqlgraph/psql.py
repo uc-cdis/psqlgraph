@@ -8,17 +8,15 @@ from sqlalchemy.orm import sessionmaker, configure_mappers
 from xlocal import xlocal
 import logging
 # Custom modules
-from edge import Edge, PolyEdge
-from exc import QueryError
-from hooks import receive_before_flush
-from node import PolyNode, Node
-from query import GraphQuery
-from util import pg_property
-from util import retryable, default_backoff
-from voided_edge import VoidedEdge
-from voided_node import VoidedNode
-from session import GraphSession
-import psqlgraph2neo4j
+from psqlgraph.edge import Edge
+from .exc import QueryError
+from .hooks import receive_before_flush
+from .node import PolyNode, Node
+from .query import GraphQuery
+from psqlgraph.util import retryable, default_backoff
+from .voided_edge import VoidedEdge
+from .voided_node import VoidedNode
+from .session import GraphSession
 import socket
 
 DEFAULT_RETRIES = 0
@@ -188,7 +186,7 @@ class PsqlGraphDriver(object):
             if not inherited_session:
                 local.commit()
 
-        except Exception, msg:
+        except Exception as msg:
             logging.error('Rolling back session {}'.format(msg))
             local.rollback()
             raise
@@ -398,7 +396,7 @@ class PsqlGraphDriver(object):
     def edge_update(self, edge, system_annotations={}, properties={},
                     session=None):
         with self.session_scope(session) as local:
-            for key, val in system_annotations.items():
+            for key, val in list(system_annotations.items()):
                 edge.system_annotations[key] = val
             edge.properties.update(properties)
             local.merge(edge)

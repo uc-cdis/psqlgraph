@@ -1,8 +1,8 @@
 # from edge import Edge, PsqlEdge, PsqlVoidedEdge
-from node import Node
-from voided_node import VoidedNode
-from voided_edge import VoidedEdge
-from edge import Edge
+from .node import Node
+from .voided_node import VoidedNode
+from .voided_edge import VoidedEdge
+from .edge import Edge
 from sqlalchemy.orm import Query
 from sqlalchemy import not_, or_
 from copy import copy
@@ -447,7 +447,7 @@ class GraphQuery(Query):
         for key in keys:
             self = self.filter(or_(
                 self.entity()._props.contains({key: None}),
-                not_(self.entity()._props.has_key(key)),
+                not_(key in self.entity()._props),
             ))
 
         return self
@@ -545,5 +545,5 @@ class GraphQuery(Query):
         if isinstance(keys, str):
             keys = [keys]
         for key in keys:
-            self = self.filter(self.entity()._sysan.has_key(key))
+            self = self.filter(key in self.entity()._sysan)
         return self

@@ -1,10 +1,9 @@
 from sqlalchemy import Column, Text, ForeignKey, Index
 from sqlalchemy.ext.declarative import AbstractConcreteBase, declared_attr
-from sqlalchemy.orm import relationship
 from sqlalchemy.ext.hybrid import hybrid_property
 
-from base import ORMBase, EDGE_TABLENAME_SCHEME, NODE_TABLENAME_SCHEME
-from voided_edge import VoidedEdge
+from psqlgraph.base import ORMBase, EDGE_TABLENAME_SCHEME, NODE_TABLENAME_SCHEME
+from psqlgraph.voided_edge import VoidedEdge
 
 
 def IDColumn(tablename):
@@ -250,4 +249,4 @@ def PolyEdge(src_id=None, dst_id=None, label=None, acl=[],
     )
 
 # Node and Edge classes depend on eachother so this needs to be done down here
-from node import Node
+from .node import Node

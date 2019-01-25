@@ -4,7 +4,7 @@ import time
 import random
 import logging
 from functools import wraps
-from exc import ValidationError
+from .exc import ValidationError
 from types import FunctionType
 
 #  PsqlNode modules
@@ -25,7 +25,7 @@ def validate(f, value, types, enum=None):
     _types = types+(type(None),)
     # If type is str, accept unicode as well, it will be sanitized
     if str in _types:
-        _types = _types+(unicode,)
+        _types = _types+(str,)
     if not isinstance(value, _types):
         raise ValidationError((
             "Value '{}' is of type {} and is not one of the allowed types "
@@ -55,10 +55,10 @@ def pg_property(*pg_args, **pg_kwargs):
 
 def sanitize(properties):
     sanitized = {}
-    for key, value in properties.items():
-        if isinstance(value, (list, int, str, long, bool, float, type(None))):
+    for key, value in list(properties.items()):
+        if isinstance(value, (list, int, str, bool, float, type(None))):
             sanitized[str(key)] = value
-        elif isinstance(value, unicode):
+        elif isinstance(value, str):
             sanitized[str(key)] = value.encode('ascii', 'ignore')
         else:
             raise ValueError(

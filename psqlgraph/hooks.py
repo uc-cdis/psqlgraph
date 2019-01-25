@@ -2,8 +2,8 @@
 Session hooks
 """
 from sqlalchemy.inspection import inspect
-from node import Node
-from edge import Edge
+from .node import Node
+from .edge import Edge
 
 
 def history(target, column, attr):

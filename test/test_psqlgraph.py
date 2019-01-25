@@ -188,14 +188,14 @@ class TestPsqlGraphDriver(unittest.TestCase):
                        'timestamp': None, 'new_key': None}
         g.node_merge(node_id=node_id, properties=propertiesA,
                      label=label, max_retries=retries)
-        print '-- commited A'
+        print('-- commited A')
 
         # Add second node
-        propertiesB = {'key1': u'2', 'new_key': u'n',
+        propertiesB = {'key1': '2', 'new_key': 'n',
                        'timestamp': timestamp()}
         g.node_merge(node_id=node_id, properties=propertiesB,
                      max_retries=retries)
-        print '-- commited B'
+        print('-- commited B')
 
         # Merge properties
         merged = deepcopy(propertiesA)
@@ -244,7 +244,7 @@ class TestPsqlGraphDriver(unittest.TestCase):
         propertiesA = {'key1': 'first', 'key2': 5}
         node = g.node_merge(node_id=node_id, label='test',
                             properties=propertiesA)
-        merged = {k: v for k, v in node.properties.iteritems()}
+        merged = {k: v for k, v in node.properties.items()}
 
         # Add second node
         propertiesB = {'key1': 'second', 'key2': 6}
@@ -337,8 +337,8 @@ class TestPsqlGraphDriver(unittest.TestCase):
         if not given_id:
             with g.session_scope():
                 node = g.node_lookup_one(node_id)
-            print "merged:", sanitize(merged)
-            print 'node:', sanitize(node.system_annotations)
+            print("merged:", sanitize(merged))
+            print('node:', sanitize(node.system_annotations))
             self.assertEqual(
                 sanitize(merged), sanitize(node.system_annotations))
 
@@ -1041,7 +1041,7 @@ class TestPsqlGraphDriver(unittest.TestCase):
     def _walk_tree(self, node, level=0):
         with g.session_scope():
             for edge in node.edges_out:
-                print '+--'*level + '>', edge.dst
+                print('+--'*level + '>', edge.dst)
                 self._walk_tree(edge.dst, level+1)
 
     def test_tree_walk(self):

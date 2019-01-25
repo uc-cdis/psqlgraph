@@ -1,12 +1,12 @@
-from attributes import PropertiesDict, SystemAnnotationDict
+from psqlgraph.attributes import PropertiesDict, SystemAnnotationDict
 from sqlalchemy import Column, Text, DateTime, text, event
-from sqlalchemy.dialects.postgres import ARRAY, JSONB
+from sqlalchemy.dialects.postgresql import ARRAY, JSONB
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import object_session, sessionmaker
 from sqlalchemy.orm.util import polymorphic_union
-from util import sanitize, validate
+from .util import sanitize, validate
 
 
 abstract_classes = ['Node', 'Edge', 'Base']
@@ -84,7 +84,7 @@ class CommonBase(object):
         property setter.
 
         """
-        for key, val in sanitize(properties).items():
+        for key, val in list(sanitize(properties).items()):
             setattr(self, key, val)
 
     @hybrid_property
@@ -122,7 +122,7 @@ class CommonBase(object):
         """
         if not self.has_property(key):
             raise KeyError('{} has no property {}'.format(type(self), key))
-        self._props = {k: v for k, v in self._props.iteritems()}
+        self._props = {k: v for k, v in self._props.items()}
         self._props[key] = val
 
     def _get_property(self, key):
@@ -136,11 +136,12 @@ class CommonBase(object):
             return None
         return self._props[key]
 
-    def property_template(self, properties={}):
+    def property_template(self, properties=None):
         """Returns a dictionary of {key: None} templating all of the
         properties defined on the model.
 
         """
+        properties = properties or {}
         temp = {k: None for k in self.get_property_list()}
         temp.update(properties)
         return temp
@@ -231,7 +232,7 @@ class CommonBase(object):
         .. note: acl will be overwritten, merging acls is not supported
         """
         self.system_annotations.update(system_annotations)
-        for key, value in properties.items():
+        for key, value in list(properties.items()):
             setattr(self, key, value)
         if acl is not None:
             self.acl = acl

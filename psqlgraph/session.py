@@ -1,7 +1,7 @@
 import sqlalchemy
 from sqlalchemy.orm.session import Session
 
-import exc
+from . import exc
 
 
 # NOTE TODO Find a better way to handle method docstring inheritance?

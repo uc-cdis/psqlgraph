@@ -218,7 +218,7 @@ class TestPsqlGraphDriver(unittest.TestCase):
         a.foos.append(b)
         a.tests = [c]
         with g.session_scope() as s:
-            a, b, c = map(s.merge, (a, b, c))
+            a, b, c = list(map(s.merge, (a, b, c)))
         with g.session_scope() as s:
             a = g.nodes(Test).ids('a').one()
             self.assertTrue(b in a.foos)
@@ -231,7 +231,7 @@ class TestPsqlGraphDriver(unittest.TestCase):
         e.src = a
         e.dst = b
         with g.session_scope() as s:
-            a, b = map(s.merge, (a, b))
+            a, b = list(map(s.merge, (a, b)))
             e2 = s.query(Edge2).src('a').dst('b').one()
             e = a._Edge2_out[0]
             self.assertEqual(e2, e)
@@ -253,7 +253,7 @@ class TestPsqlGraphDriver(unittest.TestCase):
         b = Foo('b')
         e = Edge2(src=a, dst=b)
         with g.session_scope() as s:
-            a, b = map(s.merge, (a, b))
+            a, b = list(map(s.merge, (a, b)))
             e2 = s.query(Edge2).src('a').dst('b').one()
             e = a._Edge2_out[0]
             self.assertEqual(e2, e)
@@ -263,7 +263,7 @@ class TestPsqlGraphDriver(unittest.TestCase):
         b = Foo('b')
         a.foos = [b]
         with g.session_scope() as s:
-            a, b = map(s.merge, (a, b))
+            a, b = list(map(s.merge, (a, b)))
         with g.session_scope() as s:
             s.delete(g.nodes(Test).ids('a').one())
         with g.session_scope() as s:
@@ -281,7 +281,7 @@ class TestPsqlGraphDriver(unittest.TestCase):
             s.merge(a)
         with g.session_scope() as s:
             n = g.nodes(Test).ids('a').one()
-            print n.sysan
+            print(n.sysan)
             self.assertTrue(n.sysan['key1'])
 
     def test_unchanged_properties_snapshot(self):

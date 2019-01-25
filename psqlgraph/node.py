@@ -1,11 +1,11 @@
-from base import ORMBase, NODE_TABLENAME_SCHEME
-from edge import Edge
+from .base import ORMBase, NODE_TABLENAME_SCHEME
+from .edge import Edge
 from sqlalchemy import Column, Text, UniqueConstraint, Index
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.ext.declarative import AbstractConcreteBase, declared_attr
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
-from voided_node import VoidedNode
+from .voided_node import VoidedNode
 
 
 DST_SRC_ASSOC = '__dst_src_assoc__'
@@ -13,7 +13,7 @@ SRC_DST_ASSOC = '__src_dst_assoc__'
 
 
 def reverse_lookup(dictionary, search_val):
-    for key, val in dictionary.iteritems():
+    for key, val in dictionary.items():
         if val == search_val:
             yield key
 
