@@ -19,6 +19,8 @@ class CommonBase(object):
     _session_hooks_before_insert = []
     _session_hooks_before_update = []
     _session_hooks_before_delete = []
+    _properties_list_full_cache = []
+    _properties_list_cache = []
 
     # ======== Columns ========
     created = Column(
@@ -163,16 +165,17 @@ class CommonBase(object):
         """Returns a list of hybrid_properties defined on the subclass model
 
         """
-        _properties_list_cache = [
-            attr for attr in dir(cls)
-            if attr in cls.__dict__
-            and isinstance(cls.__dict__[attr], hybrid_property)
-            and getattr(getattr(cls, attr), '_is_pg_property', True)
-        ]
-        print(dir(cls))
-        print(cls.__dict__)
-        print(_properties_list_cache)
-        return _properties_list_cache
+        if not cls._properties_list_cache or not set(cls.__dict__) == cls._properties_list_full_cache:
+            print("refreshing cache")
+            cls._properties_list_full_cache = set(cls.__dict__)
+            cls._properties_list_cache = [
+                attr for attr in dir(cls)
+                if attr in cls.__dict__
+                and isinstance(cls.__dict__[attr], hybrid_property)
+                and getattr(getattr(cls, attr), '_is_pg_property', True)
+            ]
+        print(cls._properties_list_cache)
+        return cls._properties_list_cache
 
     @classmethod
     def has_property(cls, key):
