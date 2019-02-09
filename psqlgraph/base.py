@@ -166,7 +166,6 @@ class CommonBase(object):
 
         """
         if not cls._properties_list_cache or not set(cls.__dict__) == cls._properties_list_full_cache:
-            print("refreshing cache")
             cls._properties_list_full_cache = set(cls.__dict__)
             cls._properties_list_cache = [
                 attr for attr in dir(cls)
@@ -174,7 +173,6 @@ class CommonBase(object):
                 and isinstance(cls.__dict__[attr], hybrid_property)
                 and getattr(getattr(cls, attr), '_is_pg_property', True)
             ]
-        print(cls._properties_list_cache)
         return cls._properties_list_cache
 
     @classmethod
