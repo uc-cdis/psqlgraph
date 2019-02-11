@@ -22,8 +22,8 @@ class CommonBase(object):
     # These cache properties are used to speed up
     # get_property_list() because checking for hybrid_property
     # is very expensive
-    _properties_list_full_cache = []
-    _properties_list_cache = []
+    _properties_list_full_cache = None
+    _properties_list_cache = None
 
     # ======== Columns ========
     created = Column(
