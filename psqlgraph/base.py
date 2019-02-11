@@ -19,6 +19,9 @@ class CommonBase(object):
     _session_hooks_before_insert = []
     _session_hooks_before_update = []
     _session_hooks_before_delete = []
+    # These cache properties are used to speed up
+    # get_property_list() because checking for hybrid_property
+    # is very expensive
     _properties_list_full_cache = []
     _properties_list_cache = []
 
