@@ -15,4 +15,4 @@ before_script:
   - pip uninstall --yes psqlgraph || true
   - yes | python setup.py install
   - cd test; python setup_test_psqlgraph.py
-script: "cd test; py.test -v -s"
+script: "cd test; py.test -v"
