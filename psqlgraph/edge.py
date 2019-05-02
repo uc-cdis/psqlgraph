@@ -69,7 +69,10 @@ class Edge(AbstractConcreteBase, ORMBase):
 
     @declared_attr
     def __tablename__(cls):
-        return EDGE_TABLENAME_SCHEME.format(class_name=cls.__name__.lower())
+        if cls.__name__ == 'Edge':
+            return None
+        else:
+            return EDGE_TABLENAME_SCHEME.format(class_name=cls.__name__.lower())
 
     def __init__(self, src_id=None, dst_id=None, properties={},
                  acl=[], system_annotations={}, label=None,

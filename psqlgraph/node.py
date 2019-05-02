@@ -36,7 +36,10 @@ class Node(AbstractConcreteBase, ORMBase):
 
     @declared_attr
     def __tablename__(cls):
-        return NODE_TABLENAME_SCHEME.format(class_name=cls.__name__.lower())
+        if cls.__name__ == 'Node':
+            return None
+        else:
+            return NODE_TABLENAME_SCHEME.format(class_name=cls.__name__.lower())
 
     @declared_attr
     def __table_args__(cls):
