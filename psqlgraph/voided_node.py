@@ -10,6 +10,7 @@ class VoidedNode(VoidedBase):
     key = Column(
         BigInteger,
         primary_key=True,
+        autoincrement=True,
         nullable=False
     )
 
