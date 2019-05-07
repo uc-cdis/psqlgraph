@@ -10,6 +10,7 @@ class VoidedEdge(VoidedBase):
     key = Column(
         BigInteger,
         primary_key=True,
+        autoincrement=True,
         nullable=False
     )
 
