@@ -60,13 +60,7 @@ class CommonBase(object):
     def __mapper_args__(cls):
         name = cls.__name__
         if name in abstract_classes:
-            pjoin = polymorphic_union({
-                scls.__tablename__: scls.__table__ for scls in
-                cls.get_subclasses()}, 'type')
-            return {
-                'polymorphic_identity': name,
-                'with_polymorphic': ('*', pjoin),
-            }
+            return {}
         else:
             return {
                 'polymorphic_identity': name,
