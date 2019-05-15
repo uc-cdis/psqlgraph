@@ -20,7 +20,22 @@ def IDColumn(tablename):
     )
 
 
-class Edge(AbstractConcreteBase, ORMBase):
+class CheckAttributesMixin:
+    @classmethod
+    def __declare_last__(cls):
+        if cls == Edge:
+            return
+        assert hasattr(cls, '__src_class__'),\
+            'You must declare __src_class__ for {}'.format(cls)
+        assert hasattr(cls, '__dst_class__'),\
+            'You must declare __dst_class__ for {}'.format(cls)
+        assert hasattr(cls, '__src_dst_assoc__'),\
+            'You must declare __src_dst_assoc__ for {}'.format(cls)
+        assert hasattr(cls, '__dst_src_assoc__'),\
+            'You must declare __dst_src_assoc__ for {}'.format(cls)
+
+
+class Edge(AbstractConcreteBase, ORMBase, CheckAttributesMixin):
 
     __src_table__ = None
     __dst_table__ = None
@@ -44,19 +59,6 @@ class Edge(AbstractConcreteBase, ORMBase):
             class_name=cls.__dst_class__.lower())
         dst_id = IDColumn(dst_table)
         return dst_id
-
-    @classmethod
-    def __declare_last__(cls):
-        if cls == Edge:
-            return
-        assert hasattr(cls, '__src_class__'),\
-            'You must declare __src_class__ for {}'.format(cls)
-        assert hasattr(cls, '__dst_class__'),\
-            'You must declare __dst_class__ for {}'.format(cls)
-        assert hasattr(cls, '__src_dst_assoc__'),\
-            'You must declare __src_dst_assoc__ for {}'.format(cls)
-        assert hasattr(cls, '__dst_src_assoc__'),\
-            'You must declare __dst_src_assoc__ for {}'.format(cls)
 
     @declared_attr
     def __table_args__(cls):

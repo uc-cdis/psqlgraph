@@ -17,6 +17,7 @@ def reverse_lookup(dictionary, search_val):
         if val == search_val:
             yield key
 
+
 class LinkEdgeMixin:
     @classmethod
     def __declare_last__(cls):
@@ -97,7 +98,6 @@ class Node(AbstractConcreteBase, ORMBase, LinkEdgeMixin):
     @hybrid_property
     def edges_out(self):
         return [e for rel in self._edges_out for e in getattr(self, rel)]
-
 
     @classmethod
     def _set_association_proxy(cls, edge_cls, attr_name, edge_name, direction):
