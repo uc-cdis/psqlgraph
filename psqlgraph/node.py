@@ -119,7 +119,6 @@ class Node(AbstractConcreteBase, ORMBase, LinkEdgeMixin):
         self._props = {}
         self.system_annotations = system_annotations
         self.acl = acl
-        self.label = label or self.get_label()
         self.properties = properties
         self.properties.update(kwargs)
         self.node_id = node_id

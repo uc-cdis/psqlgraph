@@ -14,14 +14,6 @@ NODE_TABLENAME_SCHEME = 'node_{class_name}'
 EDGE_TABLENAME_SCHEME = 'edge_{class_name}'
 
 
-class _label_property(object):
-
-    def __init__(self, fget):
-        self.fget = fget
-
-    def __get__(self, instance, owner):
-        return self.fget(owner)
-
 class CommonBase(object):
 
     _session_hooks_before_insert = []
@@ -58,15 +50,6 @@ class CommonBase(object):
         JSONB,
         default={},
     )
-
-
-    @classmethod
-    def get_label(cls):
-        return getattr(cls, '__label__', cls.__name__.lower())
-
-    @_label_property
-    def label(cls):
-        return cls.get_label()
 
 
     # ======== Table Attributes ========
@@ -192,6 +175,16 @@ class CommonBase(object):
 
         """
         return key in cls.get_property_list()
+
+
+    # ======== Label  ========
+    @classmethod
+    def get_label(cls):
+        return getattr(cls, '__label__', cls.__name__.lower())
+
+    @declared_attr
+    def label(cls):
+        return cls.get_label()
 
 
     # ======== System Annotations ========
