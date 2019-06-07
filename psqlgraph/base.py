@@ -14,6 +14,14 @@ NODE_TABLENAME_SCHEME = 'node_{class_name}'
 EDGE_TABLENAME_SCHEME = 'edge_{class_name}'
 
 
+class _label_property(object):
+
+    def __init__(self, fget):
+        self.fget = fget
+
+    def __get__(self, instance, owner):
+        return self.fget(owner)
+
 class CommonBase(object):
 
     _session_hooks_before_insert = []
@@ -51,9 +59,15 @@ class CommonBase(object):
         default={},
     )
 
+
     @classmethod
     def get_label(cls):
         return getattr(cls, '__label__', cls.__name__.lower())
+
+    @_label_property
+    def label(cls):
+        return cls.get_label()
+
 
     # ======== Table Attributes ========
     @declared_attr
@@ -179,25 +193,6 @@ class CommonBase(object):
         """
         return key in cls.get_property_list()
 
-    # ======== Label ========
-    @hybrid_property
-    def label(self):
-        """Custom label on the model
-
-        .. note: This is not the polymorphic identity, see `_type`
-        """
-        return self.get_label()
-
-    @label.setter
-    def label(self, label):
-        """Custom setter as an application level ban from changing labels.
-
-        """
-        if not isinstance(self.label, Column)\
-           and self.get_label() is not None\
-           and self.get_label() != label:
-            raise AttributeError('Cannot change label from {} to {}'.format(
-                self.get_label(), label))
 
     # ======== System Annotations ========
     @hybrid_property
