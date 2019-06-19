@@ -18,48 +18,7 @@ def reverse_lookup(dictionary, search_val):
             yield key
 
 
-class Node(AbstractConcreteBase, ORMBase):
-
-    @declared_attr
-    def _edges_out(self):
-        return list()
-
-    @declared_attr
-    def _edges_in(self):
-        return list()
-
-    node_id = Column(
-        Text,
-        primary_key=True,
-        nullable=False,
-    )
-
-    @declared_attr
-    def __tablename__(cls):
-        return NODE_TABLENAME_SCHEME.format(class_name=cls.__name__.lower())
-
-    @declared_attr
-    def __table_args__(cls):
-        return (
-            UniqueConstraint('node_id', name='_{}_id_uc'.format(
-                cls.__name__.lower())),
-            Index('{}__props_idx'.format(cls.__tablename__),
-                  '_props', postgresql_using='gin'),
-            Index('{}__sysan__props_idx'.format(cls.__tablename__),
-                  '_sysan', '_props', postgresql_using='gin'),
-            Index('{}__sysan_idx'.format(cls.__tablename__),
-                  '_sysan', postgresql_using='gin'),
-            Index('{}_node_id_idx'.format(cls.__tablename__), 'node_id'),
-        )
-
-    @hybrid_property
-    def edges_in(self):
-        return [e for rel in self._edges_in for e in getattr(self, rel)]
-
-    @hybrid_property
-    def edges_out(self):
-        return [e for rel in self._edges_out for e in getattr(self, rel)]
-
+class LinkEdgeMixin:
     @classmethod
     def __declare_last__(cls):
         src_ids, dst_ids = [], []
@@ -94,6 +53,52 @@ class Node(AbstractConcreteBase, ORMBase):
                     src_ids.append(scls.src_id)
                 cls._set_association_proxy(scls, src_assoc, name_out, 'dst')
 
+
+class Node(AbstractConcreteBase, ORMBase, LinkEdgeMixin):
+
+    @declared_attr
+    def _edges_out(self):
+        return list()
+
+    @declared_attr
+    def _edges_in(self):
+        return list()
+
+    node_id = Column(
+        Text,
+        primary_key=True,
+        nullable=False,
+    )
+
+    @declared_attr
+    def __tablename__(cls):
+        if cls.__name__ == 'Node':
+            return None
+        else:
+            return NODE_TABLENAME_SCHEME.format(class_name=cls.__name__.lower())
+
+    @declared_attr
+    def __table_args__(cls):
+        return (
+            UniqueConstraint('node_id', name='_{}_id_uc'.format(
+                cls.__name__.lower())),
+            Index('{}__props_idx'.format(cls.__tablename__),
+                  '_props', postgresql_using='gin'),
+            Index('{}__sysan__props_idx'.format(cls.__tablename__),
+                  '_sysan', '_props', postgresql_using='gin'),
+            Index('{}__sysan_idx'.format(cls.__tablename__),
+                  '_sysan', postgresql_using='gin'),
+            Index('{}_node_id_idx'.format(cls.__tablename__), 'node_id'),
+        )
+
+    @hybrid_property
+    def edges_in(self):
+        return [e for rel in self._edges_in for e in getattr(self, rel)]
+
+    @hybrid_property
+    def edges_out(self):
+        return [e for rel in self._edges_out for e in getattr(self, rel)]
+
     @classmethod
     def _set_association_proxy(cls, edge_cls, attr_name, edge_name, direction):
         rel = association_proxy(
@@ -114,7 +119,6 @@ class Node(AbstractConcreteBase, ORMBase):
         self._props = {}
         self.system_annotations = system_annotations
         self.acl = acl
-        self.label = label or self.get_label()
         self.properties = properties
         self.properties.update(kwargs)
         self.node_id = node_id

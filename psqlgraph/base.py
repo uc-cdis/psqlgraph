@@ -1,6 +1,6 @@
 from attributes import PropertiesDict, SystemAnnotationDict
 from sqlalchemy import Column, Text, DateTime, text, event
-from sqlalchemy.dialects.postgres import ARRAY, JSONB
+from sqlalchemy.dialects.postgresql import ARRAY, JSONB
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.ext.hybrid import hybrid_property
@@ -51,22 +51,13 @@ class CommonBase(object):
         default={},
     )
 
-    @classmethod
-    def get_label(cls):
-        return getattr(cls, '__label__', cls.__name__.lower())
 
     # ======== Table Attributes ========
     @declared_attr
     def __mapper_args__(cls):
         name = cls.__name__
         if name in abstract_classes:
-            pjoin = polymorphic_union({
-                scls.__tablename__: scls.__table__ for scls in
-                cls.get_subclasses()}, 'type')
-            return {
-                'polymorphic_identity': name,
-                'with_polymorphic': ('*', pjoin),
-            }
+            return {}
         else:
             return {
                 'polymorphic_identity': name,
@@ -185,25 +176,16 @@ class CommonBase(object):
         """
         return key in cls.get_property_list()
 
-    # ======== Label ========
-    @hybrid_property
-    def label(self):
-        """Custom label on the model
 
-        .. note: This is not the polymorphic identity, see `_type`
-        """
-        return self.get_label()
+    # ======== Label  ========
+    @classmethod
+    def get_label(cls):
+        return getattr(cls, '__label__', cls.__name__.lower())
 
-    @label.setter
-    def label(self, label):
-        """Custom setter as an application level ban from changing labels.
+    @declared_attr
+    def label(cls):
+        return cls.get_label()
 
-        """
-        if not isinstance(self.label, Column)\
-           and self.get_label() is not None\
-           and self.get_label() != label:
-            raise AttributeError('Cannot change label from {} to {}'.format(
-                self.get_label(), label))
 
     # ======== System Annotations ========
     @hybrid_property

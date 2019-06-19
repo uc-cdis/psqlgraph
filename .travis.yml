@@ -1,3 +1,5 @@
+dist: xenial
+
 language: python
 python:
     - "2.7"
@@ -6,7 +8,7 @@ jdk:
   - oraclejdk7
 
 addons:
-  postgresql: '9.4'
+  postgresql: '9.6'
 
 before_script:
   - "echo $JAVA_OPTS"
@@ -14,5 +16,6 @@ before_script:
   - echo -e 'Host github.com\n\tStrictHostKeyChecking no\n' >> ~/.ssh/config
   - pip uninstall --yes psqlgraph || true
   - yes | python setup.py install
-  - cd test; python setup_test_psqlgraph.py
-script: "cd test; py.test -v"
+  - pip list
+  - cd test; python setup_test_psqlgraph.py; cd ..
+script: "py.test -v test"

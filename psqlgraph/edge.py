@@ -20,7 +20,22 @@ def IDColumn(tablename):
     )
 
 
-class Edge(AbstractConcreteBase, ORMBase):
+class CheckAttributesMixin:
+    @classmethod
+    def __declare_last__(cls):
+        if cls == Edge:
+            return
+        assert hasattr(cls, '__src_class__'),\
+            'You must declare __src_class__ for {}'.format(cls)
+        assert hasattr(cls, '__dst_class__'),\
+            'You must declare __dst_class__ for {}'.format(cls)
+        assert hasattr(cls, '__src_dst_assoc__'),\
+            'You must declare __src_dst_assoc__ for {}'.format(cls)
+        assert hasattr(cls, '__dst_src_assoc__'),\
+            'You must declare __dst_src_assoc__ for {}'.format(cls)
+
+
+class Edge(AbstractConcreteBase, ORMBase, CheckAttributesMixin):
 
     __src_table__ = None
     __dst_table__ = None
@@ -45,19 +60,6 @@ class Edge(AbstractConcreteBase, ORMBase):
         dst_id = IDColumn(dst_table)
         return dst_id
 
-    @classmethod
-    def __declare_last__(cls):
-        if cls == Edge:
-            return
-        assert hasattr(cls, '__src_class__'),\
-            'You must declare __src_class__ for {}'.format(cls)
-        assert hasattr(cls, '__dst_class__'),\
-            'You must declare __dst_class__ for {}'.format(cls)
-        assert hasattr(cls, '__src_dst_assoc__'),\
-            'You must declare __src_dst_assoc__ for {}'.format(cls)
-        assert hasattr(cls, '__dst_src_assoc__'),\
-            'You must declare __dst_src_assoc__ for {}'.format(cls)
-
     @declared_attr
     def __table_args__(cls):
         return (
@@ -69,7 +71,10 @@ class Edge(AbstractConcreteBase, ORMBase):
 
     @declared_attr
     def __tablename__(cls):
-        return EDGE_TABLENAME_SCHEME.format(class_name=cls.__name__.lower())
+        if cls.__name__ == 'Edge':
+            return None
+        else:
+            return EDGE_TABLENAME_SCHEME.format(class_name=cls.__name__.lower())
 
     def __init__(self, src_id=None, dst_id=None, properties={},
                  acl=[], system_annotations={}, label=None,
@@ -210,22 +215,6 @@ class Edge(AbstractConcreteBase, ORMBase):
                               old_sysan, self.label)
         voided = VoidedEdge(temp)
         session.add(voided)
-
-    # ======== Label ========
-    @hybrid_property
-    def label(self):
-        return self.get_label()
-
-    @label.setter
-    def label(self, label):
-        """Custom setter as an application level ban from changing labels.
-
-        """
-        if not isinstance(self.label, Column)\
-           and self.get_label() is not None\
-           and self.get_label() != label:
-            raise AttributeError('Cannot change label from {} to {}'.format(
-                self.get_label(), label))
 
 
 def PolyEdge(src_id=None, dst_id=None, label=None, acl=[],
