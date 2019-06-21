@@ -1,21 +1,45 @@
 dist: xenial
-
 language: python
 python:
-    - "2.7"
-# command to run tests
+- '2.7'
 jdk:
-  - oraclejdk7
-
+- oraclejdk7
 addons:
   postgresql: '9.6'
-
+install:
+- pip uninstall --yes psqlgraph || true
+- pip install pipenv
+- pipenv install --dev --deploy --python `which python`
+- pipenv graph
 before_script:
-  - "echo $JAVA_OPTS"
-  - "export JAVA_OPTS=-Xmx512m"
-  - echo -e 'Host github.com\n\tStrictHostKeyChecking no\n' >> ~/.ssh/config
-  - pip uninstall --yes psqlgraph || true
-  - yes | python setup.py install
-  - pip list
-  - cd test; python setup_test_psqlgraph.py; cd ..
-script: "py.test -v test"
+- echo $JAVA_OPTS
+- export JAVA_OPTS=-Xmx512m
+- echo -e 'Host github.com\n\tStrictHostKeyChecking no\n' >> ~/.ssh/config
+- pipenv run python test/setup_test_psqlgraph.py
+script: pipenv run py.test -v test
+before_deploy:
+- sed -i.bak "s/=get_version()/='$TRAVIS_TAG'/g" setup.py
+- cat setup.py
+- if [ $(python setup.py --version) == '0.0.0' ]; then travis_terminate 1; fi
+deploy:
+  provider: pypi
+  user: uc-ctds
+  skip_existing: true
+  skip_cleanup: true
+  on:
+    python: 2.7
+    repo: uc-cdis/psqlgraph
+    tags: true
+    branch: develop
+  password:
+    secure: hiSe0K4dZSeQyx0NUI79STVKyaGupuJIuvkAWmyky0OX2YzKta6hanyJEIkWLHq0465Z6GJV1qLPZB5pYCjJyEXuGMu5yjdBMqyGvdjXBt8A4BFlesKJXe1ljS+u3JoOZKMqUUrGqxfdxfcxnfo9hXwG06gQqdjxMAMgMCaikAA5mhg58eZV12bcBTwPLvIhQ7qt2EABahBms7Udi0OY6oQMUJ9L3I/7FXLF4CRRaf+UdZHgDz7TdFEq0h2yxUNtaKyJFzsDffQfu6lYn/Pue7nF9HDsWGO7zZOrNkflw9cWoHlFOQjrG/OMUDmZ0Nf3oKm+CfQM51FKkRMINlgsUGnHeVmm1xJ+LGTMmBuUXuTDkOsNbmbmQ3YT0aoJOYqMmm7QjlyuvFGM1hx0Vrw/4BHP8p0Uz/R1mnhfnOOuDWw3Tqj8Y6dZsR5kO8NX0RG3V5VQXz4ABiYDx2/P41zW4qChni5uq4NPnktfrFkRVKR9gbfGqUVhmSiAZqM1MGZpmNwJ5tASYnhPa+gVTLQCR9yQQ+qqMpD9kTZZMremWibvWfHrq4OQvQOuMOdNjxuE+3vdQkO68VtqiIl/qAvReGNA/y9ky5P4fQDYwmNRcVXOrKpS7L5rZbriATBWSZhOmmFrh735UZ6er6i9pgqMrP2mA8wW1lxIFGdHCBcDzZU=
+env:
+  global:
+  - PIPENV_IGNORE_VIRTUALENVS=1
+  - secure: OADcVWEZgkVtRduIDbuyXBVBoEeJJCJZ/yGqLK+uU4ziM+CJ7AxEHbOgKENpkbUXEvrTz1CnNt//CAKGXZnPU0mBLvCB0sD1WvO3ITNcufqxUBceEAyrrjMEwrQ51fHTSzWxfaHYcqFGsxHonHOsS/hLuRshgGgc8HT5Yu39WBtiTG6SCvKAsq7GYuk4PQ6vK44g5YVZqzur9zyXcUdFmv+GBBHVfXlTGwzd9CMfx+o0sqpD9KcAxMCIfoxL/ReGM3KihFy+WgID9gmlH6tq18RnKrtLZbHgPO5395HPZoKpy+HWJtCOf1Q/luvCPo+DI4LYhU9o/WOOSPK4hb06IUOMYlxDf0LKo3P85P2lGhM3RLpiKF6+YB+EjLdld1LCFHPMRi3QG6pUAH6Jg3+9Iko3ry2QCNFMGxOmfdc8vYefXanSi7++MxevKONQdAb2rcz+XK/5bLXWWzPbs4QC0y+c6GzcayQwHDrlrf5kvHBC27zy/kW8oW7iQlN+4UgddZeUBjiSm7bdWNt2D1r522vMz6W+9JU3dNLcHoBiNm3dJVFbOV3RX4RaJdNnUUX9FMeS4xpBV1/keR2d3wZxFQjf4/uQq6/crOtBExtxwaZSPt+R0/JRCtQcQYxU9uum2ezVmFhjzFkKgsW3dDVQFja9Hxp1bc0G/tBs2vfhlUc=
+# gen3git release will try to pull old commits instead of just commits since last tag.
+# Need to fix this (PXP-3383), then can uncomment after_deploy section
+# For now just manually generate release notes.
+#after_deploy:
+#- pipenv run pip install gen3git
+#- pipenv run gen3git release
