@@ -21,48 +21,7 @@ def reverse_lookup(dictionary, search_val):
             yield key
 
 
-<<<<<<< HEAD
-class LinkEdgeMixin:
-    @classmethod
-    def __declare_last__(cls):
-        src_ids, dst_ids = [], []
-        for scls in Edge.get_subclasses():
-            name = scls.__name__
-            name_in = '_{}_in'.format(name)
-            name_out = '_{}_out'.format(name)
-            src_assoc = getattr(scls, SRC_DST_ASSOC)
-            dst_assoc = getattr(scls, DST_SRC_ASSOC)
-            if scls.__dst_class__ == cls.__name__:
-                if not hasattr(cls, name_in):
-                    edge_in = relationship(
-                        name,
-                        foreign_keys=[scls.dst_id],
-                        backref='dst',
-                        cascade='all, delete, delete-orphan',
-                    )
-                    setattr(cls, name_in, edge_in)
-                    cls._edges_in.append(name_in)
-                    dst_ids.append(scls.dst_id)
-                cls._set_association_proxy(scls, dst_assoc, name_in, 'src')
-            if scls.__src_class__ == cls.__name__:
-                if not hasattr(cls, name_out):
-                    edge_out = relationship(
-                        name,
-                        foreign_keys=[scls.src_id],
-                        backref='src',
-                        cascade='all, delete, delete-orphan',
-                    )
-                    setattr(cls, name_out, edge_out)
-                    cls._edges_out.append(name_out)
-                    src_ids.append(scls.src_id)
-                cls._set_association_proxy(scls, src_assoc, name_out, 'dst')
-
-
-class Node(AbstractConcreteBase, ORMBase, LinkEdgeMixin):
-
-=======
 class NodeAssociationProxyMixin(object):
->>>>>>> 3e3226e9a832a191d480a6c5a3e8c2cc55c07da8
     @declared_attr
     def _edges_out(self):
         return list()
@@ -71,44 +30,6 @@ class NodeAssociationProxyMixin(object):
     def _edges_in(self):
         return list()
 
-<<<<<<< HEAD
-    node_id = Column(
-        Text,
-        primary_key=True,
-        nullable=False,
-    )
-
-    @declared_attr
-    def __tablename__(cls):
-        if cls.__name__ == 'Node':
-            return None
-        else:
-            return NODE_TABLENAME_SCHEME.format(class_name=cls.__name__.lower())
-
-    @declared_attr
-    def __table_args__(cls):
-        return (
-            UniqueConstraint('node_id', name='_{}_id_uc'.format(
-                cls.__name__.lower())),
-            Index('{}__props_idx'.format(cls.__tablename__),
-                  '_props', postgresql_using='gin'),
-            Index('{}__sysan__props_idx'.format(cls.__tablename__),
-                  '_sysan', '_props', postgresql_using='gin'),
-            Index('{}__sysan_idx'.format(cls.__tablename__),
-                  '_sysan', postgresql_using='gin'),
-            Index('{}_node_id_idx'.format(cls.__tablename__), 'node_id'),
-        )
-
-    @hybrid_property
-    def edges_in(self):
-        return [e for rel in self._edges_in for e in getattr(self, rel)]
-
-    @hybrid_property
-    def edges_out(self):
-        return [e for rel in self._edges_out for e in getattr(self, rel)]
-
-    @classmethod
-=======
     @classmethod
     def __declare_last__(cls):
         """
@@ -160,7 +81,6 @@ class NodeAssociationProxyMixin(object):
         return [e for rel in self._edges_out for e in getattr(self, rel)]
 
     @classmethod
->>>>>>> 3e3226e9a832a191d480a6c5a3e8c2cc55c07da8
     def _set_association_proxy(cls, edge_cls, attr_name, edge_name, direction):
         rel = association_proxy(
             edge_name,
@@ -277,15 +197,9 @@ class Node(AbstractConcreteBase, ORMBase, NodeAssociationProxyMixin):
     def __init__(self, node_id=None, properties=None, acl=None,
                  system_annotations=None, label=None, **kwargs):
         self._props = {}
-<<<<<<< HEAD
-        self.system_annotations = system_annotations
-        self.acl = acl
-        self.properties = properties
-=======
         self.system_annotations = system_annotations or {}
         self.acl = acl or []
         self.properties = properties or {}
->>>>>>> 3e3226e9a832a191d480a6c5a3e8c2cc55c07da8
         self.properties.update(kwargs)
         self.node_id = node_id
 

@@ -1,4 +1,5 @@
-from attributes import PropertiesDict, SystemAnnotationDict
+import sqlalchemy
+from .attributes import PropertiesDict, SystemAnnotationDict
 from sqlalchemy import Column, Text, DateTime, text, event
 from sqlalchemy.dialects.postgresql import ARRAY, JSONB
 from sqlalchemy.ext.declarative import declarative_base

@@ -21,24 +21,6 @@ def id_column(tablename, class_name):
     )
 
 
-<<<<<<< HEAD
-class CheckAttributesMixin:
-    @classmethod
-    def __declare_last__(cls):
-        if cls == Edge:
-            return
-        assert hasattr(cls, '__src_class__'),\
-            'You must declare __src_class__ for {}'.format(cls)
-        assert hasattr(cls, '__dst_class__'),\
-            'You must declare __dst_class__ for {}'.format(cls)
-        assert hasattr(cls, '__src_dst_assoc__'),\
-            'You must declare __src_dst_assoc__ for {}'.format(cls)
-        assert hasattr(cls, '__dst_src_assoc__'),\
-            'You must declare __dst_src_assoc__ for {}'.format(cls)
-
-
-class Edge(AbstractConcreteBase, ORMBase, CheckAttributesMixin):
-=======
 class DeclareLastEdgeMixin(object):
     @classmethod
     def __declare_last__(cls):
@@ -54,7 +36,6 @@ class DeclareLastEdgeMixin(object):
         assert hasattr(cls, '__dst_src_assoc__'), \
             'You must declare __dst_src_assoc__ for {}'.format(cls)
 
->>>>>>> 3e3226e9a832a191d480a6c5a3e8c2cc55c07da8
 
 class Edge(AbstractConcreteBase, ORMBase, DeclareLastEdgeMixin):
     __src_table__ = None
@@ -74,15 +55,12 @@ class Edge(AbstractConcreteBase, ORMBase, DeclareLastEdgeMixin):
     @declared_attr
     def dst_id(cls):
 
-<<<<<<< HEAD
-=======
         dst_table = cls.__dst_table__
 
         if not dst_table and hasattr(cls, "__dst_class__"):
             dst_table = NODE_TABLENAME_SCHEME.format(class_name=cls.__dst_class__.lower())
         return id_column(dst_table, cls.__name__)
 
->>>>>>> 3e3226e9a832a191d480a6c5a3e8c2cc55c07da8
     @declared_attr
     def __table_args__(cls):
         return (
@@ -94,10 +72,7 @@ class Edge(AbstractConcreteBase, ORMBase, DeclareLastEdgeMixin):
 
     @declared_attr
     def __tablename__(cls):
-        if cls.__name__ == 'Edge':
-            return None
-        else:
-            return EDGE_TABLENAME_SCHEME.format(class_name=cls.__name__.lower())
+        return EDGE_TABLENAME_SCHEME.format(class_name=cls.__name__.lower())
 
     def __init__(self, src_id=None, dst_id=None, properties=None,
                  acl=None, system_annotations=None, label=None,
@@ -244,15 +219,9 @@ class Edge(AbstractConcreteBase, ORMBase, DeclareLastEdgeMixin):
         session.add(voided)
 
 
-<<<<<<< HEAD
-def PolyEdge(src_id=None, dst_id=None, label=None, acl=[],
-             system_annotations={}, properties={}):
-    assert label, 'You cannot create a PolyEdge without a label.'
-=======
 def PolyEdge(src_id=None, dst_id=None, label=None, acl=None, system_annotations=None, properties=None):
     if not label:
         raise AttributeError('You cannot create a PolyEdge without a label.')
->>>>>>> 3e3226e9a832a191d480a6c5a3e8c2cc55c07da8
     try:
         edge_type_class = Edge.get_subclass(label)
     except Exception as e:
