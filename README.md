@@ -1,6 +1,5 @@
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/562dc95026254b1a82b39062322bd845)](https://www.codacy.com/manual/NCI-GDC/psqlgraph?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=NCI-GDC/psqlgraph&amp;utm_campaign=Badge_Grade)
-[![Codacy Badge](https://api.codacy.com/project/badge/Coverage/562dc95026254b1a82b39062322bd845)](https://www.codacy.com/manual/NCI-GDC/psqlgraph?utm_source=github.com&utm_medium=referral&utm_content=NCI-GDC/psqlgraph&utm_campaign=Badge_Coverage)
-[![Build Status](https://travis-ci.org/NCI-GDC/psqlgraph.svg?branch=develop)](https://travis-ci.org/NCI-GDC/psqlgraph)
+[![Build Status](https://magnum.travis-ci.com/NCI-GDC/psqlgraph.svg?token=LApTVTN34FyXpxo5zU44&branch=master)](https://magnum.travis-ci.com/NCI-GDC/psqlgraph)
+
 # Overview
 
 The psqlgraph library is a layer on top of [SQLAlchemy's](http://www.sqlalchemy.org/) ORM layer that attemps to capitalize on the benefits of SQL while utilizing Postgresql's JSONB support for SQL-less flexibility.  Psqlgraph allows you to interact with your data graphically by defining Node and Edge models to maintain flexible many-to-many relationships.
@@ -63,7 +62,25 @@ Read how to contribute [here](https://github.com/NCI-GDC/gdcapi/blob/master/CONT
 Running the setup script will test the library against a local postgres installation
 
 ```
-❯  pip install pytest
-❯  cd test
-❯  py.test -v
+❯  nosetests -v
+test_concurrent_node_update_by_id (test_psql_graph.TestPsqlGraphDriver) ... ok
+test_edge_lookup_leaves (test_psql_graph.TestPsqlGraphDriver) ... ok
+test_edge_merge_and_lookup (test_psql_graph.TestPsqlGraphDriver) ... ok
+test_edge_merge_and_lookup_properties (test_psql_graph.TestPsqlGraphDriver) ... ok
+test_node_clobber (test_psql_graph.TestPsqlGraphDriver) ... ok
+test_node_delete (test_psql_graph.TestPsqlGraphDriver) ... ok
+test_node_delete_property_keys (test_psql_graph.TestPsqlGraphDriver) ... ok
+test_node_delete_system_annotation_keys (test_psql_graph.TestPsqlGraphDriver) ... ok
+Insert a single node and query, compare that the result of the ... ok
+Verify that the library handles the case where a user queries for ... ok
+Verify that the library handles the case where a user queries for a ... ok
+test_node_unique_id_constraint (test_psql_graph.TestPsqlGraphDriver) ... ok
+Insert a single node, update it, verify that ... ok
+Insert a single node, update it, verify that ... ok
+Insert a single node, update it, verify that ... ok
+test_null_node_merge (test_psql_graph.TestPsqlGraphDriver) ... ok
+test_null_node_void (test_psql_graph.TestPsqlGraphDriver) ... ok
+
+...
+
 ```
