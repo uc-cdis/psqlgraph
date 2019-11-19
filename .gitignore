@@ -43,6 +43,7 @@ htmlcov/
 .tox/
 .coverage
 .cache
+.report/
 nosetests.xml
 coverage.xml
 
@@ -62,3 +63,8 @@ target/
 # IDEs
 .idea/
 *.swp
+
+*.DS_Store
+
+# VS Code
+.vscode
