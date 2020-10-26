@@ -6,10 +6,10 @@ import psqlgraph
 @pytest.fixture(scope="session")
 def pg_conf():
     return {
-        'host': "localhost",
-        'user': "test",
-        'password': "test",
-        'database': "automated_test"
+        "host": "localhost",
+        "user": "test",
+        "password": "test",
+        "database": "automated_test",
     }
 
 

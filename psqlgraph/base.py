@@ -10,9 +10,9 @@ from psqlgraph.attributes import PropertiesDict, SystemAnnotationDict
 from psqlgraph.util import sanitize, validate
 
 
-abstract_classes = ['Node', 'Edge', 'Base']
-NODE_TABLENAME_SCHEME = 'node_{class_name}'
-EDGE_TABLENAME_SCHEME = 'edge_{class_name}'
+abstract_classes = ["Node", "Edge", "Base"]
+NODE_TABLENAME_SCHEME = "node_{class_name}"
+EDGE_TABLENAME_SCHEME = "edge_{class_name}"
 
 
 class CommonBase(object):
@@ -30,7 +30,7 @@ class CommonBase(object):
     created = sqlalchemy.Column(
         sqlalchemy.DateTime(timezone=True),
         nullable=False,
-        server_default=sqlalchemy.text('now()'),
+        server_default=sqlalchemy.text("now()"),
     )
 
     acl = sqlalchemy.Column(
@@ -42,16 +42,15 @@ class CommonBase(object):
         # WARNING: Do not update this column directly. See
         # `.system_annotations`
         JSONB,
-        server_default='{}',
+        server_default="{}",
     )
 
     _props = sqlalchemy.Column(
         # WARNING: Do not update this column directly.
         # See `.properties` or `.props`
         JSONB,
-        server_default='{}',
+        server_default="{}",
     )
-
 
     # ======== Table Attributes ========
     @declared_attr
@@ -61,8 +60,8 @@ class CommonBase(object):
             return {}
         else:
             return {
-                'polymorphic_identity': name,
-                'concrete': True,
+                "polymorphic_identity": name,
+                "concrete": True,
             }
 
     def __init__(self, *args, **kwargs):
@@ -86,30 +85,22 @@ class CommonBase(object):
 
     @hybrid_property
     def props(self):
-        """Alias of properties
-
-        """
+        """Alias of properties"""
         return self.properties
 
     @props.setter
     def props(self, properties):
-        """Alias of properties
-
-        """
+        """Alias of properties"""
         self.properties = properties
 
     @hybrid_property
     def sysan(self):
-        """Alias of properties
-
-        """
+        """Alias of properties"""
         return self.system_annotations
 
     @sysan.setter
     def sysan(self, sysan):
-        """Alias of properties
-
-        """
+        """Alias of properties"""
         self.system_annotations = sysan
 
     def _set_property(self, key, val):
@@ -118,7 +109,7 @@ class CommonBase(object):
 
         """
         if not self.has_property(key):
-            raise KeyError('{} has no property {}'.format(type(self), key))
+            raise KeyError("{} has no property {}".format(type(self), key))
         self._props = {k: v for k, v in self._props.items()}
         self._props[key] = val
 
@@ -128,7 +119,7 @@ class CommonBase(object):
 
         """
         if not self.has_property(key):
-            raise KeyError('{} has no property {}'.format(type(self), key))
+            raise KeyError("{} has no property {}".format(type(self), key))
         if key not in self._props:
             return None
         return self._props[key]
@@ -144,9 +135,7 @@ class CommonBase(object):
         return temp
 
     def __getitem__(self, key):
-        """Returns value corresponding to key in _props
-
-        """
+        """Returns value corresponding to key in _props"""
         return getattr(self, key)
 
     def __setitem__(self, key, val):
@@ -158,36 +147,34 @@ class CommonBase(object):
 
     @classmethod
     def get_property_list(cls):
-        """Returns a list of hybrid_properties defined on the subclass model
-
-        """
-        if not cls._properties_list_cache or not set(cls.__dict__) == cls._properties_list_full_cache:
+        """Returns a list of hybrid_properties defined on the subclass model"""
+        if (
+            not cls._properties_list_cache
+            or not set(cls.__dict__) == cls._properties_list_full_cache
+        ):
             cls._properties_list_full_cache = set(cls.__dict__)
             cls._properties_list_cache = [
-                attr for attr in dir(cls)
+                attr
+                for attr in dir(cls)
                 if attr in cls.__dict__
                 and isinstance(cls.__dict__[attr], hybrid_property)
-                and getattr(getattr(cls, attr), '_is_pg_property', True)
+                and getattr(getattr(cls, attr), "_is_pg_property", True)
             ]
         return cls._properties_list_cache
 
     @classmethod
     def has_property(cls, key):
-        """Returns boolean if key is a property defined on the subclass model
-
-        """
+        """Returns boolean if key is a property defined on the subclass model"""
         return key in cls.get_property_list()
-
 
     # ======== Label  ========
     @classmethod
     def get_label(cls):
-        return getattr(cls, '__label__', cls.__name__.lower())
+        return getattr(cls, "__label__", cls.__name__.lower())
 
     @declared_attr
     def label(cls):
         return cls.get_label()
-
 
     # ======== System Annotations ========
     @hybrid_property
@@ -201,20 +188,15 @@ class CommonBase(object):
 
     @system_annotations.setter
     def system_annotations(self, sysan):
-        """Directly set the model's _sysan column with dict sysan.
-
-        """
+        """Directly set the model's _sysan column with dict sysan."""
         self._sysan = sanitize(sysan)
 
     def get_name(self):
-        """Convenience wrapper for getting class name
-        """
+        """Convenience wrapper for getting class name"""
         return type(self).__name__
 
     def get_session(self):
-        """Returns the session an object is bound to if bound to a session
-
-        """
+        """Returns the session an object is bound to if bound to a session"""
         return object_session(self)
 
     def merge(self, acl=None, system_annotations=None, properties=None):
@@ -259,7 +241,7 @@ class CommonBase(object):
         properties
 
         """
-        for key in getattr(self, '__nonnull_properties__', []):
+        for key in getattr(self, "__nonnull_properties__", []):
             assert self.properties[key] is not None, (
                 "Null value in key '{}' violates non-null constraint for {}."
             ).format(key, self)
@@ -284,10 +266,11 @@ def create_hybrid_property(name, fset):
     def hybrid_prop(instance, value):
         validate(fset, value, fset.__pg_types__, fset.__pg_enum__)
         fset(instance, value)
+
     return hybrid_prop
 
 
-@sqlalchemy.event.listens_for(CommonBase, 'mapper_configured', propagate=True)
+@sqlalchemy.event.listens_for(CommonBase, "mapper_configured", propagate=True)
 def create_hybrid_properties(mapper, cls):
     # This dictionary will be a property name to allowed types
     # dictionary.  It will be populated at mapper configuration using
@@ -295,11 +278,11 @@ def create_hybrid_properties(mapper, cls):
     cls.__pg_properties__ = {}
 
     for pg_attr in dir(cls):
-        if pg_attr in ['properties', 'props', 'system_annotations', 'sysan']:
+        if pg_attr in ["properties", "props", "system_annotations", "sysan"]:
             continue
 
         f = getattr(cls, pg_attr)
-        if not getattr(f, '__pg_setter__', False):
+        if not getattr(f, "__pg_setter__", False):
             continue
 
         h_prop = create_hybrid_property(pg_attr, f)
@@ -308,33 +291,24 @@ def create_hybrid_properties(mapper, cls):
 
 
 class VoidedBaseClass(object):
-
     @hybrid_property
     def props(self):
-        """Alias of properties
-
-        """
+        """Alias of properties"""
         return self.properties
 
     @props.setter
     def props(self, properties):
-        """Alias of properties
-
-        """
+        """Alias of properties"""
         self.properties = properties
 
     @hybrid_property
     def sysan(self):
-        """Alias of properties
-
-        """
+        """Alias of properties"""
         return self.system_annotations
 
     @sysan.setter
     def sysan(self, sysan):
-        """Alias of properties
-
-        """
+        """Alias of properties"""
         self.system_annotations = sysan
 
 

@@ -28,7 +28,9 @@ class SystemAnnotationDict(JsonProperty):
 
     def __init__(self, source):
         self.source = source
-        super(SystemAnnotationDict, self).__init__(psqlgraph.util.sanitize(source._sysan))
+        super(SystemAnnotationDict, self).__init__(
+            psqlgraph.util.sanitize(source._sysan)
+        )
 
     def update(self, system_annotations=None, **kwargs):
 
@@ -60,8 +62,7 @@ class PropertiesDict(JsonProperty):
 
     def __init__(self, source):
         self.source = source
-        super(PropertiesDict, self).__init__(
-            source.property_template(source._props))
+        super(PropertiesDict, self).__init__(source.property_template(source._props))
 
     def update(self, properties=None, **kwargs):
 
@@ -72,8 +73,7 @@ class PropertiesDict(JsonProperty):
         properties = psqlgraph.util.sanitize(properties)
         for key, val in properties.items():
             if not self.source.has_property(key):
-                raise AttributeError('{} has no property {}'.format(
-                    self.source, key))
+                raise AttributeError("{} has no property {}".format(self.source, key))
             setattr(self.source, key, val)
         super(PropertiesDict, self).update(self.source._props)
 
@@ -81,4 +81,4 @@ class PropertiesDict(JsonProperty):
         setattr(self.source, key, val)
 
     def __delitem__(self, key):
-        raise RuntimeError('You cannot delete ORM properties, only void them.')
+        raise RuntimeError("You cannot delete ORM properties, only void them.")

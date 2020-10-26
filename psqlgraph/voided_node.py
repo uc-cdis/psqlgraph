@@ -5,14 +5,9 @@ from psqlgraph.base import VoidedBase
 
 class VoidedNode(VoidedBase):
 
-    __tablename__ = '_voided_nodes'
+    __tablename__ = "_voided_nodes"
 
-    key = Column(
-        BigInteger,
-        primary_key=True,
-        autoincrement=True,
-        nullable=False
-    )
+    key = Column(BigInteger, primary_key=True, autoincrement=True, nullable=False)
 
     node_id = Column(
         Text,
@@ -22,13 +17,13 @@ class VoidedNode(VoidedBase):
     created = Column(
         DateTime(timezone=True),
         nullable=False,
-        server_default=text('now()'),
+        server_default=text("now()"),
     )
 
     voided = Column(
         DateTime(timezone=True),
         nullable=False,
-        server_default=text('now()'),
+        server_default=text("now()"),
     )
 
     acl = Column(
