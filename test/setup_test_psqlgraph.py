@@ -12,7 +12,7 @@ from psqlgraph import create_all
 from psqlgraph import PsqlGraphDriver
 
 
-def try_drop_test_data(user, database, root_user="postgres", host=""):
+def try_drop_test_data(user, database, host="", root_user="postgres"):
 
     print("Dropping old test data")
 
@@ -38,13 +38,13 @@ def try_drop_test_data(user, database, root_user="postgres", host=""):
     conn.close()
 
 
-def setup_database(user, password, database, root_user="postgres", host=""):
+def setup_database(user, password, database, host="", root_user="postgres"):
     """
     setup the user and database
     """
     print("Setting up test database")
 
-    try_drop_test_data(user, database)
+    try_drop_test_data(user, database, host)
 
     engine = create_engine(
         "postgres://{user}@{host}/postgres".format(user=root_user, host=host)
@@ -114,6 +114,6 @@ if __name__ == "__main__":
     )
 
     args = parser.parse_args()
-    setup_database(args.user, args.password, args.database)
+    setup_database(args.user, args.password, args.database, args.host)
     create_tables(args.host, args.user, args.password, args.database)
     create_indexes(args.host, args.user, args.password, args.database)
