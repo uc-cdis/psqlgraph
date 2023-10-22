@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "psqlgraph"
-version = "4.0.0"
+version = "3.1.0"
 description = "Gen3 fork of NCI psqlgraph"
 authors = ["CTDS UChicago <cdis@uchicago.edu>"]
 license = "Apache-2.0"
