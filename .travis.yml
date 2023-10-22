@@ -8,9 +8,8 @@ addons:
   postgresql: '9.6'
 install:
 - pip uninstall --yes psqlgraph || true
-- pip install pipenv
-- pipenv install --dev --deploy --python `which python`
-- pipenv graph
+- pip install poetry
+- poetry install -vv
 before_script:
 - echo $JAVA_OPTS
 - export JAVA_OPTS=-Xmx512m
