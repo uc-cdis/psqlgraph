@@ -28,14 +28,17 @@ class GraphQuery(Query):
 
     def entity(self):
         """It is useful for us to be able to get the last entity in a chained
-        join.  Therfore, if there are _join_entities on the query, the
-        entity will be the last one in the chain.  If there is noo
+        join. Therefore, if there are _join_entities on the query, the
+        entity will be the last one in the chain. If there is no
         join in the query, then the entity is simply the specified
         entity.
 
         """
-
-        return self._joinpoint_zero().entity
+        return (
+            self._last_joined_entity.entity
+            if self._last_joined_entity
+            else self.column_descriptions[-1]["entity"]
+        )
 
     # ======== Edges ========
     def with_edge_to_node(self, edge_type, target_node):

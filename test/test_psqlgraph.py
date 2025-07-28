@@ -1450,7 +1450,7 @@ class TestPsqlGraphTraversal(PsqlgraphBaseTest):
         self.assertEqual(expected_ids, traversal_ids)
 
     def test_directed_traversal(self):
-        """ Tests walking towards the root node from a leaf """
+        """Tests walking towards the root node from a leaf"""
         with self.g.session_scope():
             leaf = self.g.nodes().props(key1="test5").first()
             expected = ["test5", "test2", "foo1", "root"]

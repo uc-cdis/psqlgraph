@@ -1,6 +1,7 @@
 """
 Session hooks
 """
+
 from sqlalchemy.inspection import inspect
 from psqlgraph.node import Node
 from psqlgraph.edge import Edge
