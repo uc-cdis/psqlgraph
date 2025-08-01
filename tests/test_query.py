@@ -4,7 +4,7 @@ import uuid
 from psqlgraph import Node, Edge, PsqlGraphDriver
 from psqlgraph import PolyNode, PolyEdge
 
-from test import models, PsqlgraphBaseTest
+from tests import models, PsqlgraphBaseTest
 
 logging.basicConfig(level=logging.INFO)
 

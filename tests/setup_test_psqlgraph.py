@@ -17,7 +17,7 @@ def try_drop_test_data(user, database, host="", root_user="postgres"):
     print("Dropping old test data")
 
     engine = create_engine(
-        "postgres://{user}@{host}/postgres".format(user=root_user, host=host)
+        "postgresql://{user}@{host}/postgres".format(user=root_user, host=host)
     )
 
     conn = engine.connect()
@@ -47,7 +47,7 @@ def setup_database(user, password, database, host="", root_user="postgres"):
     try_drop_test_data(user, database, host)
 
     engine = create_engine(
-        "postgres://{user}@{host}/postgres".format(user=root_user, host=host)
+        "postgresql://{user}@{host}/postgres".format(user=root_user, host=host)
     )
     conn = engine.connect()
     conn.execute("commit")

@@ -7,7 +7,7 @@ import pytest
 
 from psqlgraph import Node
 from psqlgraph.mocks import GraphFactory, NodeFactory
-from test import models
+from tests import models
 
 
 STRING_MATCH = "[a-zA-Z0-9]{32}"

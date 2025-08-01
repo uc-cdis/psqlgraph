@@ -7,7 +7,7 @@ import socket
 import sqlalchemy as sa
 
 # We have to import models here, even if we don't use them
-from test import models, PsqlgraphBaseTest
+from tests import models, PsqlgraphBaseTest
 
 
 logging.basicConfig(level=logging.DEBUG)
