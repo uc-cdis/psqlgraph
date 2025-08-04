@@ -8,7 +8,7 @@ class PropertiesDictError(Exception):
 
 
 class JsonProperty(dict):
-    """ Handles unicode to str conversion while retrieving properties"""
+    """Handles unicode to str conversion while retrieving properties"""
 
     def __setitem__(self, key, value):
 

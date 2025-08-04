@@ -9,7 +9,7 @@ def pg_conf():
         "host": "localhost",
         "user": "test",
         "password": "test",
-        "database": "automated_test",
+        "database": "sheepdog_automated_test",
     }
 
 

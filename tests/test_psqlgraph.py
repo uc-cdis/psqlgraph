@@ -16,7 +16,7 @@ from copy import deepcopy
 
 
 # We have to import models here, even if we don't use them
-from test import models, PsqlgraphBaseTest
+from tests import models, PsqlgraphBaseTest
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -1450,7 +1450,7 @@ class TestPsqlGraphTraversal(PsqlgraphBaseTest):
         self.assertEqual(expected_ids, traversal_ids)
 
     def test_directed_traversal(self):
-        """ Tests walking towards the root node from a leaf """
+        """Tests walking towards the root node from a leaf"""
         with self.g.session_scope():
             leaf = self.g.nodes().props(key1="test5").first()
             expected = ["test5", "test2", "foo1", "root"]
