@@ -36,7 +36,7 @@ class GraphQuery(Query):
         """
         return (
             self._last_joined_entity.entity
-            if self._last_joined_entity
+            if hasattr(self, "_last_joined_entity") and self._last_joined_entity
             else self.column_descriptions[-1]["entity"]
         )
 
