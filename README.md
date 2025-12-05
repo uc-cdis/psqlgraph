@@ -1,4 +1,6 @@
-[![Build Status](https://magnum.travis-ci.com/NCI-GDC/psqlgraph.svg?token=LApTVTN34FyXpxo5zU44&branch=master)](https://magnum.travis-ci.com/NCI-GDC/psqlgraph)
+![version](https://img.shields.io/github/release/uc-cdis/psqlgraph.svg)
+[![License](https://img.shields.io/github/license/uc-cdis/psqlgraph?logo=apache)](https://github.com/uc-cdis/psqlgraph/blob/master/LICENSE)
+
 
 # Overview
 
@@ -17,14 +19,14 @@ Before continuing you must have the following programs installed:
 - [Python 3.6](http://python.org/)
 - [Postgresql 9.4](http://www.postgresql.org/download/)
 
-The psqlgraph library requires the following pip dependencies
+The psqlgraph library requires the following dependencies
 
 - [SQLAlchemy](http://www.sqlalchemy.org/)
 - [Psycopg2](http://initd.org/psycopg/)
 
 ### Project Dependencies
 
-Project dependencies are managed using [PIP](https://pip.readthedocs.org/en/latest/)
+Project dependencies are managed using [poetry](https://python-poetry.org/)
 
 ### Building Documentation
 
@@ -42,27 +44,20 @@ build succeeded.
 Build finished. The HTML pages are in build/html.
 ```
 
-## Test Setup
+## Running tests locally
 
-Running the setup script will:
-
-1. Setup the test postgres tables
+Run the setup script to create a test database:
 
 ```
-❯ python psqlgraph/setup_psql_graph.py
-Setting up test database
-Dropping old test data
-Creating tables in test database
+python tests/ci_setup.py
 ```
+
+
+Test with pytest
+
+```
+poetry run pytest -v tests
+```
+
 # Contributing
-Read how to contribute [here](https://github.com/NCI-GDC/gdcapi/blob/master/CONTRIBUTING.md)
-
-# Tests
-
-Running the setup script will test the library against a local postgres installation
-
-```
-❯  pip install pytest
-❯  cd test
-❯  py.test -v
-```
+Read how to contribute [here](https://docs.gen3.org/gen3-resources/developer-guide/contribute/).
