@@ -16,8 +16,8 @@ For usage documentation please see /doc/build/html.
 
 Before continuing you must have the following programs installed:
 
-- [Python 3.6](http://python.org/)
-- [Postgresql 9.4](http://www.postgresql.org/download/)
+- [Python 3.13](http://python.org/)
+- [Postgresql 13](http://www.postgresql.org/download/)
 
 The psqlgraph library requires the following dependencies
 
