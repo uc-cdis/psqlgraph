@@ -14,6 +14,7 @@ xlocal = "==0.5"
 rstr = ">=2.2.6"
 six = ">=1.12.0"
 sqlalchemy = ">=1.3.3,<2"
+ipython = { version = "*", optional = true }
 
 [tool.poetry.group.dev.dependencies]
 pytest = "<9"
@@ -21,6 +22,9 @@ parameterized = "<1"
 pytest-cov = "<7"
 tox = "<5"
 deptry = "^0.23.1"
+
+[tool.poetry.extras]
+ipython = ["ipython"]
 
 [build-system]
 requires = ["poetry>=0.12"]
@@ -31,4 +35,9 @@ minversion = "6.0"
 addopts = "-vv"
 testpaths = [
     "tests",
+]
+
+[tool.deptry.per_rule_ignores]
+DEP002 = [
+    "psycopg2-binary"  # sqlalchemy dependency
 ]

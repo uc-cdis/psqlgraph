@@ -4,9 +4,9 @@ from psqlgraph import psql
 
 
 try:
-    import IPython
+    import ipython
 
-    ipython = True
+    has_ipython = True
 except Exception as e:
     print(
         (
@@ -19,7 +19,7 @@ except Exception as e:
     )
     import code
 
-    ipython = False
+    has_ipython = False
 
 
 message = """
@@ -72,7 +72,7 @@ if __name__ == "__main__":
 
     with g.session_scope() as s:
         rb = s.rollback
-        if ipython:
-            IPython.embed()
+        if has_ipython:
+            ipython.embed()
         else:
             code.InteractiveConsole(locals=globals()).interact()
