@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 import logging
 import argparse
-from gdcdatamodel import models
 from sqlalchemy import UniqueConstraint
 from sqlalchemy.dialects.postgresql import ARRAY, JSONB
 from sqlalchemy import Column, Integer, Text, DateTime
